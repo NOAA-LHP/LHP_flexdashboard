@@ -1,0 +1,78 @@
+---
+title: "Themed dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    source_code: "https://github.com/pwoodworth-jefcoats/climate-indicators"
+    orientation: rows
+    vertical_layout: fill
+    theme:
+      version: 4
+      bg: "#FFFFFF"
+      fg: "#000000" 
+      primary: "#005AA8"
+      
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+```
+
+
+```{r}
+here::i_am("biosampling.Rmd")
+```
+
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+
+data<-read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples.csv")
+
+
+```
+
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Choose a region and species...
+
+```{r}
+
+selectInput("Region", label = "Region:",
+            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "A.Samoa")
+
+
+selectInput("ScientificName", label = "Species",
+            choices = unique(data$ScientificName), selected = "Aphareus rutilans")
+
+selectedData <- reactive({
+  data[, c(input$Region, input$ScientificName, "Length.cm.", "Sex", "Date", "GonWeight", "Weight.g." )]
+})
+
+
+
+```
+
+
+A total of `r sample_size` *`r ScientificName`* samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm). 
+
+
+
+Column {data-width=650 .tabset}
+-----------------------------------------------------------------------
+
+
+## Species Summary
+A total of `r sample_size` *`r ScientificName`* samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm). 
+
+## 4 panel chart
+```{r}
+
+renderPlot(dataplot(selectedData()))
+
+```

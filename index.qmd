@@ -1,0 +1,8 @@
+# Citation {.unnumbered}
+
+E Schemmel, 2023. LHP Flexdashboard. Pacific Island Fisheries Science Center.
+
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
