@@ -62,18 +62,4 @@ dataplot<-function(dataframe){
                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_discrete(limits = month.abb)
     grid.arrange(p1,p2,p3,p4 , nrow = 2)
   }
-  
-  sample_size=length(final_list$temp$Length.cm.)
-  min<-min(final_list$temp$Length.cm., na.rm=TRUE)
-  max<-max(final_list$temp$Length.cm., na.rm=TRUE)
-  median<-median(final_list$temp$Length.cm., na.rm=TRUE)
-  gender<-final_list$temp %>%
-    group_by(Sex)%>%
-    summarize(n_females=length(Sex=="F"))
-  female=gender[1,2]
-  male=gender[2,2]
-  unknown=gender[3,2]
-  
-  maxm<-max(final_list$tempm$N_month, na.rm=TRUE)
-  maxm<-if (maxm >=20) maxm else 20
 }
