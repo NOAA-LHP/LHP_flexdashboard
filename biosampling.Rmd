@@ -36,28 +36,31 @@ source(here::here("functions", "dataplot_simple.R"))
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
-data<-read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples.csv")
+data <- read.csv("data/all_samples.csv")
 
+#set up species and region lists for dropdown menu
+region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
+species_list <- na.omit((unique(data$ScientificName)))
 
 ```
 
 
 ```{r}
 
-region_list<-selectInput("Region", label = "Region:",
-            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "Guam")
+#region_list<-selectInput("Region", label = "Region:",
+#            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "Guam")
 
 
-species_list<-selectInput("ScientificName", label = "Species",
-            choices = unique(data$ScientificName), selected = "Aphareus rutilans")
+#species_list<-selectInput("ScientificName", label = "Species",
+#            choices = unique(data$ScientificName), selected = "Aphareus rutilans")
 
 # selectedData <- reactive({
 #  data <- data |> filter(Region == input$Region & ScientificName==input$ScientificName)
 # })
 
-selectedData <- reactive({
-  data[, c(input$Region, input$ScientificName, "Length.cm.", "Sex", "Date", "GonWeight", "Weight.g." )]
-})
+#selectedData <- reactive({
+#  data[, c(input$Region, input$ScientificName, "Length.cm.", "Sex", "Date", "GonWeight", "Weight.g." )]
+#})
 
 ```
 
@@ -66,7 +69,7 @@ selectedData <- reactive({
 
 <span style="color:#005AA8">
 
-<h4>**Choose a region and species** <br/>to begin:</h4>
+<h4>**Choose a region and species** to begin:</h4>
 
 </span>
 
@@ -79,16 +82,22 @@ div(style = "margin-top: -20px; ", #decreases amount of whitespace between label
 div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
   selectInput('Species', label = ' ', choices = species_list, selected = c('Aphareus rutilans'))
 )
+
 ```
 
+Species Summary
+======================================================================
 
-
-## Species Summary {.tabset data-width="650"}
+Row
+-----------------------------------------------------------------------
 
 ```{r}
-  #temp=filter(data, ScientificName==input$ScientificName & Region==input$Region)
-renderText()
-  temp=data
+
+output$text_summary <- renderUI({
+  
+  # Filter data
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
     na.omit(temp)
@@ -105,15 +114,14 @@ renderText()
   gsi<-temp %>% 
     dplyr::mutate(GSI=(GonWeight/Weight.g.)*100)
   
-  
   #join into list
   build_list<-list(temp, tempm, gsi)
   names(build_list)<- c('temp','tempm','gsi')
   final_list<-build_list
   sample_size=length(final_list$temp$Length.cm.)
-  min<-min(final_list$temp$Length.cm., na.rm=TRUE)
-  max<-max(final_list$temp$Length.cm., na.rm=TRUE)
-  median<-median(final_list$temp$Length.cm., na.rm=TRUE)
+  length_min<-min(final_list$temp$Length.cm., na.rm=TRUE)
+  length_max<-max(final_list$temp$Length.cm., na.rm=TRUE)
+  length_median<-median(final_list$temp$Length.cm., na.rm=TRUE)
   gender<-final_list$temp %>%
     dplyr::group_by(Sex)%>%
     dplyr::summarize(n_females=length(Sex=="F"))
@@ -123,18 +131,30 @@ renderText()
   
   maxm<-max(final_list$tempm$N_month, na.rm=TRUE)
   maxm<-if (maxm >=20) maxm else 20
+  
+  #unpretty formatting but I could not get inline variables (line below) to work
+  paste0("A total of ", sample_size, " samples (females=", female, ", males=", male,
+         ", unknown/na=", unknown, ") have been collected to date. Median fork length is ",
+         length_median, " cm (min=", length_min, "cm, max=", length_max, " cm).")
+  
+  #markdown("A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).")
+  
+})
+
+uiOutput("text_summary")
+
 ```
 
-
-
-A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).
-
-## 4 panel chart
+Row
+-----------------------------------------------------------------------
 
 ```{r}
 
-renderPlot({
-  temp=selectedData
+output$four_panel_plot <- renderPlot({
+
+  # Filter data
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
     na.omit(temp)
@@ -148,25 +168,25 @@ renderPlot({
   maxm<-max(tempm$N_month, na.rm=TRUE)
   maxm<-if (maxm >=20) maxm else 20
   tempm<-complete(tempm, Month, fill=list(N_Month=0))
-  return(temo)
   gsi<-temp %>% 
     mutate(GSI=(GonWeight/Weight.g.)*100)
-  return(gsi)
   
   #join into list
   build_list<-list(temp, tempm, gsi)
   names(build_list)<- c('temp','tempm','gsi')
   final_list<-build_list
+  length_min<-min(final_list$temp$Length.cm., na.rm=TRUE)
+  length_max<-max(final_list$temp$Length.cm., na.rm=TRUE)
   
     bin_width=2
-    nbins <- seq(min - bin_width,
-                 max + bin_width,
+    nbins <- seq(length_min - bin_width,
+                 length_max + bin_width,
                  by = bin_width)
     p1 <- ggplot(data=temp, aes(x=Length.cm.))+geom_histogram(binwidth=2,breaks=nbins, color="black", aes(fill=Sex)) + 
       xlab("Fork Length (cm)") +  ylab("Frequency") + ggtitle("Size Distribution")+
-      scale_fill_manual(values=c("red", "blue", "white"))+
+      scale_fill_manual(values=c("red", "blue", "white", "black"))+
       theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_continuous(limits = c(min-2, max+2))
+                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_continuous(limits = c(length_min-2, length_max+2))
     
     
     #monthly samples
@@ -178,7 +198,7 @@ renderPlot({
     #GSI
     p3<-ggplot(gsi, aes(x=Length.cm., y=GSI, color=Sex)) +  xlab("Fork Length (cm)") +  ylab("GSI") + ggtitle("GSI & Fish Length")+
       geom_point(aes(colour=Sex), size=2) +
-      geom_point(shape = 1,size=2, colour = "black") + scale_color_manual(values=c("red", "blue", "white"))+
+      geom_point(shape = 1,size=2, colour = "black") + scale_color_manual(values=c("red", "blue", "white", "black"))+
       theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")
     
@@ -193,10 +213,11 @@ renderPlot({
       xlab("") +  ylab("GSI") + ggtitle("Spawning Season")+
       theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_discrete(limits = month.abb)
+    
     grid.arrange(p1,p2,p3,p4 , nrow = 2)
 }
 )
 
+plotOutput("four_panel_plot")
 
 ```
-
