@@ -21,12 +21,16 @@ library(magrittr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(gridExtra)
+
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
 # thematic::thematic_rmd()
 ```
 
 ```{r}
 here::i_am("biosampling.Rmd")
+source(here::here("functions", "dataplot_simple.R"))
+
 ```
 
 ```{r global, include=FALSE}
@@ -37,31 +41,53 @@ data<-read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples.csv")
 
 ```
 
-## Column {.sidebar}
-
-Choose a region and species...
 
 ```{r}
 
-selectInput("Region", label = "Region:",
-            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "A.Samoa")
+region_list<-selectInput("Region", label = "Region:",
+            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "Guam")
 
 
-selectInput("ScientificName", label = "Species",
+species_list<-selectInput("ScientificName", label = "Species",
             choices = unique(data$ScientificName), selected = "Aphareus rutilans")
+
+# selectedData <- reactive({
+#  data <- data |> filter(Region == input$Region & ScientificName==input$ScientificName)
+# })
 
 selectedData <- reactive({
   data[, c(input$Region, input$ScientificName, "Length.cm.", "Sex", "Date", "GonWeight", "Weight.g." )]
 })
 
-
-
 ```
+
+
+# Sidebar {.sidebar}
+
+<span style="color:#005AA8">
+
+<h4>**Choose a region and species** <br/>to begin:</h4>
+
+</span>
+
+```{r}
+# Select indicator to view - start with SST selected
+div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Region', label = ' ', choices = region_list, selected = c('Guam'))
+)
+
+div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Species', label = ' ', choices = species_list, selected = c('Aphareus rutilans'))
+)
+```
+
 
 
 ## Species Summary {.tabset data-width="650"}
 
 ```{r}
+  #temp=filter(data, ScientificName==input$ScientificName & Region==input$Region)
+renderText()
   temp=data
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
@@ -78,7 +104,7 @@ selectedData <- reactive({
   tempm<-tidyr::complete(tempm, Month, fill=list(N_Month=0))
   gsi<-temp %>% 
     dplyr::mutate(GSI=(GonWeight/Weight.g.)*100)
-  return(gsi)
+  
   
   #join into list
   build_list<-list(temp, tempm, gsi)
@@ -102,11 +128,75 @@ selectedData <- reactive({
 
 
 A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).
+
 ## 4 panel chart
 
 ```{r}
 
-renderPlot(dataplot(selectedData()))
+renderPlot({
+  temp=selectedData
+  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
+  tempm<-temp%>% 
+    na.omit(temp)
+  Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
+  Mn=c(1:10, 1)
+  Months<-as.data.frame(Months)
+  Months<-as.factor(Months$Months)
+  tempm<-tempm %>%
+    group_by(Month)%>%
+    dplyr::summarize(N_month=length(Length.cm.))
+  maxm<-max(tempm$N_month, na.rm=TRUE)
+  maxm<-if (maxm >=20) maxm else 20
+  tempm<-complete(tempm, Month, fill=list(N_Month=0))
+  return(temo)
+  gsi<-temp %>% 
+    mutate(GSI=(GonWeight/Weight.g.)*100)
+  return(gsi)
+  
+  #join into list
+  build_list<-list(temp, tempm, gsi)
+  names(build_list)<- c('temp','tempm','gsi')
+  final_list<-build_list
+  
+    bin_width=2
+    nbins <- seq(min - bin_width,
+                 max + bin_width,
+                 by = bin_width)
+    p1 <- ggplot(data=temp, aes(x=Length.cm.))+geom_histogram(binwidth=2,breaks=nbins, color="black", aes(fill=Sex)) + 
+      xlab("Fork Length (cm)") +  ylab("Frequency") + ggtitle("Size Distribution")+
+      scale_fill_manual(values=c("red", "blue", "white"))+
+      theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_continuous(limits = c(min-2, max+2))
+    
+    
+    #monthly samples
+    p2<-ggplot(tempm, aes(x=Month, y=tempm$N_month)) + 
+      geom_bar(stat = "identity")+xlab("") +  ylab("Frequency") + ggtitle("Monthly Sample Distribution")+
+      geom_hline(yintercept = 20, colour="red", linetype = "dashed")+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                                                                                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")
+    
+    #GSI
+    p3<-ggplot(gsi, aes(x=Length.cm., y=GSI, color=Sex)) +  xlab("Fork Length (cm)") +  ylab("GSI") + ggtitle("GSI & Fish Length")+
+      geom_point(aes(colour=Sex), size=2) +
+      geom_point(shape = 1,size=2, colour = "black") + scale_color_manual(values=c("red", "blue", "white"))+
+      theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")
+    
+    
+    #Spawning Season
+    gsi_f<-gsi %>% 
+      subset(Sex=="F")
+    gsi_f$Month<-month(gsi_f$Date, label=TRUE)
+    
+    p4<-ggplot(gsi_f, aes(x=as.factor( Month), y=GSI)) + 
+      geom_boxplot(fill="red") +
+      xlab("") +  ylab("GSI") + ggtitle("Spawning Season")+
+      theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+                         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_discrete(limits = month.abb)
+    grid.arrange(p1,p2,p3,p4 , nrow = 2)
+}
+)
+
 
 ```
 
