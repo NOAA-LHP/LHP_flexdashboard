@@ -29,14 +29,14 @@ library(gridExtra)
 
 ```{r}
 here::i_am("biosampling.Rmd")
-source(here::here("functions", "dataplot_simple.R"))
+source(here::here("functions", "dataplot_simple.R")) #put into the rmardown instead
 
 ```
 
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
-data <- read.csv("data/all_samples.csv")
+data <- read.csv("data/all_samples_2_2024.csv")
 
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
@@ -44,25 +44,6 @@ species_list <- na.omit((unique(data$ScientificName)))
 
 ```
 
-
-```{r}
-
-#region_list<-selectInput("Region", label = "Region:",
-#            choices = c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished"), selected = "Guam")
-
-
-#species_list<-selectInput("ScientificName", label = "Species",
-#            choices = unique(data$ScientificName), selected = "Aphareus rutilans")
-
-# selectedData <- reactive({
-#  data <- data |> filter(Region == input$Region & ScientificName==input$ScientificName)
-# })
-
-#selectedData <- reactive({
-#  data[, c(input$Region, input$ScientificName, "Length.cm.", "Sex", "Date", "GonWeight", "Weight.g." )]
-#})
-
-```
 
 
 # Sidebar {.sidebar}
@@ -97,7 +78,10 @@ output$text_summary <- renderUI({
   
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
-  
+  #for checking code 
+  #temp<-data
+  #temp<-temp%>% filter(ScientificName=="Aphareus rutilans" & Region=="Guam")
+  temp<-temp[complete.cases(temp$Length.cm.),] 
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
     na.omit(temp)
@@ -154,7 +138,7 @@ output$four_panel_plot <- renderPlot({
 
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
-  
+  temp<-temp[complete.cases(temp$Length.cm.),] 
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
     na.omit(temp)
