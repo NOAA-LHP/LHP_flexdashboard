@@ -36,12 +36,12 @@ source(here::here("functions", "dataplot_simple.R")) #put into the rmardown inst
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
-data <- read.csv("data/all_samples_2_2024.csv")
-
+#data <- read.csv("data/all_samples_2_2024.csv")
+data <- read.csv("data/all_samples_2_2024_commonname.csv")
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
 species_list <- na.omit((unique(data$ScientificName)))
-
+common_list<-na.omit((unique(data$CommonName)))
 ```
 
 
@@ -64,6 +64,10 @@ div(style = "margin-top: -20px; ", #decreases amount of whitespace between label
   selectInput('Species', label = ' ', choices = species_list, selected = c('Aphareus rutilans'))
 )
 
+div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Name', label = ' ', choices = common_list, selected = c('SILVERMOUTH'))
+)
+
 ```
 
 Species Summary
@@ -77,7 +81,7 @@ Row
 output$text_summary <- renderUI({
   
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species | CommonName==input$Name)
   #for checking code 
   #temp<-data
   #temp<-temp%>% filter(ScientificName=="Aphareus rutilans" & Region=="Guam")
@@ -137,7 +141,7 @@ Row
 output$four_panel_plot <- renderPlot({
 
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species | CommonName==input$Name)
   temp<-temp[complete.cases(temp$Length.cm.),] 
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
