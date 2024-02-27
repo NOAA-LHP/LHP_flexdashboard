@@ -213,7 +213,7 @@ Pacific Islands Fisheries Science Center, Life History Program samples insular f
 
 # Life History Updates
 
-![](images/PRZO.png){width="200"} **Gindai (*Pristipomoides zonatus*)**
+![](images/gindai.jpg){width="200"} **Gindai (*Pristipomoides zonatus*)**
 
 Updates to gindai life history are continuing with additional sampling and updates to the 2021 life history assessment. Ginadi are moderately long lived, with maximum age recorded of 30 years in Guam. Males obtain a larger average size and a larger asymptotic size (+3.03 cm, 1.2 inches) fork length (FL) than females. Gindai have a long spawning season and spawn often, suggesting high reproductive output.
 
