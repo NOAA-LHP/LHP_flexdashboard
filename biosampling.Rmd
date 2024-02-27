@@ -44,8 +44,6 @@ species_list <- na.omit((unique(data$ScientificName)))
 common_list<-na.omit((unique(data$CommonName)))
 ```
 
-
-
 # Sidebar {.sidebar}
 
 <span style="color:#005AA8">
@@ -70,11 +68,9 @@ div(style = "margin-top: -20px; ", #decreases amount of whitespace between label
 
 ```
 
-Species Summaries
-======================================================================
+# Species Summaries
 
-Row
------------------------------------------------------------------------
+## Row {data-height="100"}
 
 ```{r}
 
@@ -133,8 +129,7 @@ uiOutput("text_summary")
 
 ```
 
-Row
------------------------------------------------------------------------
+## Row {data-height="550"}
 
 ```{r}
 
@@ -210,10 +205,44 @@ plotOutput("four_panel_plot")
 
 ```
 
-About
-======================================================================
+# About
 
 Appropriate collections of biological samples are crucial for understanding fish life history and population dynamics needed for sustainable fisheries management. These samples provide estimates of length at age, growth rates, longevity, aspects of reproduction (size and age at maturity, fecundity, spawning season), and mortality. This information is used to inform stock assessments, including those that use a data-poor approach. Life history information is also important to local management agencies when setting size limits and closed seasons to protect fish while they are spawning and ultimately increase fish population productivity. Finally, fish life history is expected to change in response to climate change; therefore, providing baseline information under current conditions is needed to document and understand future impacts.
 
-Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date. For more information please see the full biosamling inventory report available at: [https://repository.library.noaa.gov/view/noaa/45018](https://repository.library.noaa.gov/view/noaa/45018).
+Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/45018>.
 
+# Life History Updates
+
+![](images/PRZO.png){width="200"} **Gindai (*Pristipomoides zonatus*)**
+
+Updates to gindai life history are continuing with additional sampling and updates to the 2021 life history assessment. Ginadi are moderately long lived, with maximum age recorded of 30 years in Guam. Males obtain a larger average size and a larger asymptotic size (+3.03 cm, 1.2 inches) fork length (FL) than females. Gindai have a long spawning season and spawn often, suggesting high reproductive output.
+
+Highlights
+
+-   Size ranged from 11.5 to 40.4 cm. (4.5 – 15.9 inches) FL.
+
+-   Maximum age for gindai from Guam was 30 years, but individuals in the Northern Marianas Islands have been found as old as 38 years.
+
+-   Female size at maturity was 24.0 cm FL at 3.4 years. - Spawning occurred May through September.
+
+![](images/VALO_2_together.png){width="200"} **Yellow-Edged Lyretail (*Variola louti*)**
+
+Groupers (Family Epinephelidae) are important to commercial, subsistence, and recreational fisheries throughout the world. Grouper species have complex life histories that make them more vulnerable to exploitation. Age, growth, and reproduction were assessed from fishery-dependent samples collected around Guam from 2010 to 2017.
+
+Highlights Size ranged from 19.4 to 49.7 cm. (7.6 – 19.6 inches) FL.
+
+-   Maximum age was 17 years, but individuals over 10 years old are rare.
+
+-   Yellow-edged lyretail is a protogynous hermaphrodite (all males are derived from females) with an average size at sex change of 35.3 cm (13.9 inches) FL at 6.1 years.
+
+-   Some spawning occurs all year but there is a peak from October through March.
+
+![](images/PRAU_photo.png){width="200"} **Yellowtail Kalekale, Goldenflag Snapper (*Pristipomoides auricilla*)**
+
+Goldenflag jobfish are younger in fished areas (Guam and Saipan) compared to unfished areas in the Northern Marianas Islands. Maximum age in the Marianas found to date is 32 years, however the oldest individual from around Guam was only 10 years. The reproduction is currently being assessed. There is a long spawning season from spring through summer with spawning occurring every few days during the spawning season. 
+
+Highlights
+
+-   Maximum size in the Marianas Islands was found to be 40.3 cm (15.9 inches) FL and maximum age was  32 years. 
+
+-   The preliminary size at maturity is 23.7 cm (9.3 inches) FL.
