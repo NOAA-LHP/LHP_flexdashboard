@@ -48,29 +48,29 @@ common_list<-na.omit((unique(data$CommonName)))
 
 <span style="color:#005AA8">
 
-<h4>**Choose a region and species** to begin:</h4>
+<h4>**Choose a region and species**:</h4>
 
 </span>
 
 ```{r}
 # Select indicator to view - start with SST selected
-div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
-  selectInput('Region', label = ' ', choices = region_list, selected = c('Guam'))
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Region', label = 'Region', choices = region_list, selected = c('Guam'))
 )
 
-div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
-  selectInput('Species', label = ' ', choices = species_list, selected = c('Aphareus rutilans'))
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Species', label = 'Species', choices = species_list, selected = c('Aphareus rutilans'))
 )
 
-div(style = "margin-top: -20px; ", #decreases amount of whitespace between label and input selection UI
-  selectInput('Name', label = ' ', choices = common_list, selected = c('SILVERMOUTH'))
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Name', label = 'Common Name', choices = common_list, selected = c('SILVERMOUTH'))
 )
 
 ```
 
 # Species Summaries
 
-## Row {data-height="100"}
+## Row {data-height="150"}
 
 ```{r}
 
