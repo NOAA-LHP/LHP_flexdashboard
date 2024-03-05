@@ -73,16 +73,27 @@ div(style = "margin-top: -10px; ", #decreases amount of whitespace between label
 ## Row {data-height="150"}
 
 ```{r}
+#build data dictionary = Species/Name
+vals=reactiveValues(ScientificName=FALSE,CommonName=FALSE)
+
+
 
 output$text_summary <- renderUI({
-  
+
+observeEvent(input$Species,{
+vals$ScientificName=TRUE
+vals$CommonName=FALSE
+})
+
+observeEvent(input$Name,{
+vals$ScientificName=FALSE
+vals$CommonName=TRUE
+})
+
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species | CommonName==input$Name)
-  #for checking code 
-  #temp<-data
-  #temp<-temp%>% filter(ScientificName=="Aphareus rutilans" & Region=="Guam")
-  temp<-temp[complete.cases(temp$Length.cm.),] 
-  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
+   temp<-temp[complete.cases(temp$Length.cm.),] 
+  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
   tempm<-temp%>% 
     na.omit(temp)
   Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -125,6 +136,10 @@ output$text_summary <- renderUI({
   
 })
 
+
+
+  
+  
 uiOutput("text_summary")
 
 ```
