@@ -38,10 +38,26 @@ source(here::here("functions", "dataplot_simple.R")) #put into the rmardown inst
 
 #data <- read.csv("data/all_samples_2_2024.csv")
 data <- read.csv("data/all_samples_2_2024_commonname.csv")
+
+#TEMPORARY - test data set
+test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
+test_commonnames <- c('SILVERMOUTH', 'BLUEBANDED SURGEONFISH', 'KALIKALI')
+data <- data |> filter(CommonName %in% test_commonnames & ScientificName %in% test_scinames)
+#END TEMPORARY
+
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
 species_list <- na.omit((unique(data$ScientificName)))
-common_list<-na.omit((unique(data$CommonName)))
+common_list <- na.omit((unique(data$CommonName)))
+
+#dictionary of scientific name : common name
+scientific_dict <- species_list
+names(scientific_dict) <- common_list
+
+#and common name : scientific name
+common_dict <- common_list
+names(common_dict) <- species_list
+
 ```
 
 # Sidebar {.sidebar}
@@ -66,6 +82,16 @@ div(style = "margin-top: -10px; ", #decreases amount of whitespace between label
   selectInput('Name', label = 'Common Name', choices = common_list, selected = c('SILVERMOUTH'))
 )
 
+#When common name changes, update scientific name
+observeEvent(input$Name, {
+  updateSelectInput(session, 'Species', label = NULL, choices = species_list, selected = scientific_dict[input$Name])
+})
+
+#when scientific name changes, update common name
+observeEvent(input$Species, {
+  updateSelectInput(session, 'Name', label = NULL, choices = common_list, selected = common_dict[input$Species])
+})
+
 ```
 
 # Species Summaries
@@ -73,25 +99,11 @@ div(style = "margin-top: -10px; ", #decreases amount of whitespace between label
 ## Row {data-height="150"}
 
 ```{r}
-#build data dictionary = Species/Name
-vals=reactiveValues(ScientificName=FALSE,CommonName=FALSE)
-
-
 
 output$text_summary <- renderUI({
 
-observeEvent(input$Species,{
-vals$ScientificName=TRUE
-vals$CommonName=FALSE
-})
-
-observeEvent(input$Name,{
-vals$ScientificName=FALSE
-vals$CommonName=TRUE
-})
-
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species | CommonName==input$Name)
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
    temp<-temp[complete.cases(temp$Length.cm.),] 
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
   tempm<-temp%>% 
@@ -135,10 +147,6 @@ vals$CommonName=TRUE
   #markdown("A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).")
   
 })
-
-
-
-  
   
 uiOutput("text_summary")
 
@@ -151,7 +159,7 @@ uiOutput("text_summary")
 output$four_panel_plot <- renderPlot({
 
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species | CommonName==input$Name)
+  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
   temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp%>% 
