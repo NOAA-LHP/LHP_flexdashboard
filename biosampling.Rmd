@@ -29,20 +29,49 @@ library(gridExtra)
 
 ```{r}
 here::i_am("biosampling.Rmd")
-source(here::here("functions", "dataplot_simple.R")) #put into the rmardown instead
+
 
 ```
 
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
+#data <- read.csv("data/all_samples_2_2024_commonname.csv") 
 
-#data <- read.csv("data/all_samples_2_2024.csv")
-data <- read.csv("data/all_samples_2_2024_commonname.csv")
+data <- read.csv("data/all_samples_2_2024.csv")
+
+#pull BMUS and priority non-BMUS species
+#test first with BMUS only
+BMUS<-c("Aphareus rutilans", 
+  "Caranx ignobilis",  
+  "Caranx lugubris",  
+  "Etelis carbunculus",  
+  "Etelis coruscans",  
+  "Lethrinus rubrioperculatus" , 
+  "Lutjanus kasmira"  ,
+  "Pristipomoides auricilla"  ,
+  "Pristipomoides filamentosus"  ,
+  "Pristipomoides flavipinnis"  ,
+  "Pristipomoides sieboldii"  ,
+  "Pristipomoides zonatus"  ,
+  "Variola louti")
+
+#subset data 
+data<-data |> subset(ScientificName %in% BMUS)
+
+#fix common names to only one per scientific name
+#unique(data$CommonName)
+
+cname<-c("SILVERMOUTH", "GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ONAGA SNAPPER", "REDGILL EMPEROR", "BLUELINED SNAPPER", "YELLOWTAIL KALIKALI", "PINK OPAKAPAKA", "YELLOWEYE OPAKAPAKA","KALIKALI","GINDAI", "LYRETAIL GROUPER")
+
+temp<-data.frame(ScientificName=BMUS, CommonName=cname)
+
+data<-dplyr::left_join(data,temp)
+
 
 #TEMPORARY - test data set
-test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
-test_commonnames <- c('SILVERMOUTH', 'BLUEBANDED SURGEONFISH', 'KALIKALI')
-data <- data |> filter(CommonName %in% test_commonnames & ScientificName %in% test_scinames)
+#test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
+#test_commonnames <- c('SILVERMOUTH', 'BLUEBANDED SURGEONFISH', 'KALIKALI')
+#data <- data |> filter(CommonName %in% test_commonnames & ScientificName %in% test_scinames)
 #END TEMPORARY
 
 #set up species and region lists for dropdown menu
