@@ -41,7 +41,7 @@ data <- read.csv("data/all_samples_2_2024.csv")
 
 #pull BMUS and priority non-BMUS species
 #test first with BMUS only
-BMUS<-c("Aphareus rutilans", 
+BMUS<-c("Aphareus rutilans","Aprion virescens", 
   "Caranx ignobilis",  
   "Caranx lugubris",  
   "Etelis carbunculus",  
@@ -61,7 +61,7 @@ data<-data |> subset(ScientificName %in% BMUS)
 #fix common names to only one per scientific name
 #unique(data$CommonName)
 
-cname<-c("SILVERMOUTH", "GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ONAGA SNAPPER", "REDGILL EMPEROR", "BLUELINED SNAPPER", "YELLOWTAIL KALIKALI", "PINK OPAKAPAKA", "YELLOWEYE OPAKAPAKA","KALIKALI","GINDAI", "LYRETAIL GROUPER")
+cname<-c("SILVERMOUTH", "UKU","GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ONAGA SNAPPER", "REDGILL EMPEROR", "BLUELINED SNAPPER", "YELLOWTAIL KALIKALI", "PINK OPAKAPAKA", "YELLOWEYE OPAKAPAKA","KALIKALI","GINDAI", "LYRETAIL GROUPER")
 
 temp<-data.frame(ScientificName=BMUS, CommonName=cname)
 
