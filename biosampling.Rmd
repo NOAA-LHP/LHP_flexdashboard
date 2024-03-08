@@ -67,6 +67,7 @@ temp<-data.frame(ScientificName=BMUS, CommonName=cname)
 
 data<-dplyr::left_join(data,temp)
 
+data<-data|> arrange(ScientificName)
 
 #TEMPORARY - test data set
 #test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
