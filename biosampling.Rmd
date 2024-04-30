@@ -37,7 +37,7 @@ here::i_am("biosampling.Rmd")
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 #data <- read.csv("data/all_samples_2_2024_commonname.csv") 
 
-data <- read.csv("data/all_samples_2_2024.csv")
+data <- read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples_2_2024_commonname_noSI.csv")
 
 #pull BMUS and priority non-BMUS species
 #test first with BMUS only
@@ -78,7 +78,8 @@ data<-data|> arrange(ScientificName)
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
 species_list <- na.omit((unique(data$ScientificName)))
-common_list <- na.omit((unique(data$CommonName)))
+common_list <-cname
+#common_list <- na.omit((unique(data$CommonName)))
 
 #dictionary of scientific name : common name
 scientific_dict <- species_list
