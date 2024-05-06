@@ -23,6 +23,7 @@ library(dplyr)
 library(tidyr)
 library(gridExtra)
 
+
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
 # thematic::thematic_rmd()
 ```
@@ -35,7 +36,7 @@ here::i_am("biosampling.Rmd")
 
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
-#data <- read.csv("data/all_samples_2_2024_commonname.csv") 
+
 
 data <- read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples_2_2024_commonname_noSI.csv")
 
