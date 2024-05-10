@@ -28,7 +28,7 @@ dataplot_simple<-
     #Spawning Season
     gsi_f<-gsi %>% 
       subset(Sex=="F")
-    gsi_f$Month<-month(gsi_f$Date, label=TRUE)
+    #gsi_f$Month<-month(gsi_f$Date, label=TRUE)
     
     p4<-ggplot(gsi_f, aes(x=as.factor( Month), y=GSI)) + 
       geom_boxplot(fill="red") +

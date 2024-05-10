@@ -22,6 +22,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(gridExtra)
+library(htmltools)
 
 
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
@@ -68,7 +69,7 @@ temp<-data.frame(ScientificName=BMUS, CommonName=cname)
 
 data<-dplyr::left_join(data,temp)
 
-data<-data|> arrange(ScientificName)
+data<-data|> dplyr::arrange(ScientificName)
 
 #TEMPORARY - test data set
 #test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
@@ -136,15 +137,16 @@ output$text_summary <- renderUI({
 
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
-   temp<-temp[complete.cases(temp$Length.cm.),] 
-  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
+#temp=data  #for troubleshooting
+temp<-temp[complete.cases(temp$Length.cm.),] 
+  #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
   tempm<-temp%>% 
-    na.omit(temp)
+   na.omit(temp)
   Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
   Mn=c(1:10, 1)
   Months<-as.data.frame(Months)
   Months<-as.factor(Months$Months)
-  tempm<-tempm %>%
+  tempm<-temp %>%
     dplyr::group_by(Month)%>%
     dplyr::summarize(N_month=length(Length.cm.))
   maxm<-max(tempm$N_month, na.rm=TRUE)
@@ -193,21 +195,21 @@ output$four_panel_plot <- renderPlot({
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
-  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
-  tempm<-temp%>% 
-    na.omit(temp)
+  #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
+  tempm<-temp 
+   # na.omit(temp)
   Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
   Mn=c(1:10, 1)
   Months<-as.data.frame(Months)
   Months<-as.factor(Months$Months)
   tempm<-tempm %>%
-    group_by(Month)%>%
+    dplyr::group_by(Month)%>%
     dplyr::summarize(N_month=length(Length.cm.))
   maxm<-max(tempm$N_month, na.rm=TRUE)
   maxm<-if (maxm >=20) maxm else 20
   tempm<-complete(tempm, Month, fill=list(N_Month=0))
   gsi<-temp %>% 
-    mutate(GSI=(GonWeight/Weight.g.)*100)
+    dplyr::mutate(GSI=(GonWeight/Weight.g.)*100)
   
   #join into list
   build_list<-list(temp, tempm, gsi)
@@ -244,7 +246,7 @@ output$four_panel_plot <- renderPlot({
     #Spawning Season
     gsi_f<-gsi %>% 
       subset(Sex=="F")
-    gsi_f$Month<-month(gsi_f$Date, label=TRUE)
+    #gsi_f$Month<-month(gsi_f$Date, label=TRUE)
     
     p4<-ggplot(gsi_f, aes(x=as.factor( Month), y=GSI)) + 
       geom_boxplot(fill="red") +
@@ -267,6 +269,8 @@ Appropriate collections of biological samples are crucial for understanding fish
 Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/45018>.
 
 # Life History Updates
+
+**Mariana Islands**
 
 ![](images/gindai.jpg){width="200"} **Gindai (*Pristipomoides zonatus*)**
 
@@ -301,3 +305,8 @@ Highlights
 -   Maximum size in the Marianas Islands was found to be 40.3 cm (15.9 inches) FL and maximum age was  32 years. 
 
 -   The preliminary size at maturity is 23.7 cm (9.3 inches) FL.
+
+
+
+
+

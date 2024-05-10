@@ -1,7 +1,7 @@
 dataplot<-function(dataframe){
   temp=dataframe
-  temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
-  tempm<-temp%>% 
+  #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
+  #tempm<-temp%>% 
     na.omit(temp)
   Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
   Mn=c(1:10, 1)
