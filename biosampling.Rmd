@@ -57,29 +57,62 @@ BMUS<-c("Aphareus rutilans","Aprion virescens",
   "Pristipomoides zonatus"  ,
   "Variola louti")
 
-Gcoral<-c("Caranx melampygus",
+#Guam ecosystem species >=50n
+Gcoral<-c("Caranx melampygus", 
 "Cheilinus undulatus",
 "Epinephelus fasciatus",
 "Lethrinus obsoletus",
 "Siganus punctatus")
 
+#CNMI ecosystem species >=50n
+Ccoral<-c("Acanthurus lineatus",
+"Acanthurus nigricauda",
+"Acanthurus triostegus",
+"Calotomus carolinus",
+"Caranx melampygus",
+"Cephalopholis argus",
+"Cheilinus trilobatus",
+"Cheilinus undulatus",
+"Chlorurus sordidus",
+"Kyphosus cinerascens",
+"Lethrinus obsoletus",
+"Monotaxis grandoculis",
+"Mulloidichthus vanicolensis",
+"Naso lituratus",
+"Naso unicornis",
+"Sargocentron spiniferum",
+"Sargocentron tiere",
+"Scarus ruboviolaceus", 
+"Siganus punctatus",
+"Siganus spinus",
+"Zanclus cornutus")
+  
 all<-c("Aphareus rutilans","Aprion virescens", 
   "Caranx ignobilis",  
   "Caranx lugubris",  
   "Etelis carbunculus",  
   "Etelis coruscans",  
   "Lethrinus rubrioperculatus" , 
-  "Lutjanus kasmira"  ,
-  "Pristipomoides auricilla"  ,
-  "Pristipomoides filamentosus"  ,
-  "Pristipomoides flavipinnis"  ,
-  "Pristipomoides sieboldii"  ,
-  "Pristipomoides zonatus"  ,
-  "Variola louti","Caranx melampygus",
+  "Lutjanus kasmira",
+  "Pristipomoides auricilla" ,
+  "Pristipomoides filamentosus" ,
+  "Pristipomoides flavipinnis",
+  "Pristipomoides sieboldii" ,
+  "Pristipomoides zonatus" ,
+  "Variola louti",
+  "Caranx melampygus",
 "Cheilinus undulatus",
 "Epinephelus fasciatus",
 "Lethrinus obsoletus",
-"Siganus punctatus")
+"Siganus punctatus",
+"Acanthurus lineatus",
+"Acanthurus nigricauda",
+"Acanthurus triostegus",
+"Calotomus carolinus",
+"Caranx melampygus",
+"Cephalopholis argus",
+"Cheilinus trilobatus")
+
 
 #subset data 
 data<-data |> subset(ScientificName %in% all)
@@ -91,11 +124,51 @@ cname<-c("SILVERMOUTH", "UKU","GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ON
 
 Gcoral_cn<-c("BLUEFIN TREVALLY","NAPOLEON WRASSE", "BLACKTIP GROUPER", "ORANGE-STRIPED EMPEROR","GOLD-SPOTTED RABBITFISH")
 
-all_cn<-c("SILVERMOUTH", "UKU","GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ONAGA SNAPPER", "REDGILL EMPEROR", "BLUELINED SNAPPER", "YELLOWTAIL KALIKALI", "PINK OPAKAPAKA", "YELLOWEYE OPAKAPAKA","KALIKALI","GINDAI", "LYRETAIL GROUPER","BLUEFIN TREVALLY","NAPOLEON WRASSE", "BLACKTIP GROUPER", "ORANGE-STRIPED EMPEROR","GOLD-SPOTTED RABBITFISH")
+Ccoral_cn<-c("BLUEBANDED SURGEONFISH", "EPAULETTE SURGEONFISH", "CONVICT TANG", "BUCKTOOTH PARROTFISH", "BLUEFIN TREVALLY", "PEACOCK GROUPER", "TRIPLETAIL WRASSE", "NAPOLEON WRASSE","BULLETHEAD PARROTFISH", "HIGHFIN RUDDERFISH", "BIGEYE EMPEROR","YELLOWFIN GOATFISH", "ORANGESPINE UNICORNFISH", "BLUESPINE UNICORNFISH", "SABER SQUIRRELFISH", "TAHITIAN SQUIRRELFISH", "REDLIP PARROTFISH", "SCRIBBLED RABBITFISH", "MOORISH IDOL")
+
+all_cn<-c("SILVERMOUTH",
+          "UKU",
+          "GIANT TREVALLY", 
+          "BLACK JACK",
+          "EHU SNAPPER",
+          "ONAGA SNAPPER",
+          "REDGILL EMPEROR", 
+          "BLUELINED SNAPPER", 
+          "YELLOWTAIL KALIKALI",
+          "PINK OPAKAPAKA", 
+          "YELLOWEYE OPAKAPAKA",
+          "KALIKALI",
+          "GINDAI", 
+          "LYRETAIL GROUPER",
+          "BLUEFIN TREVALLY",
+          "NAPOLEON WRASSE",
+          "BLACKTIP GROUPER", 
+          "ORANGE-STRIPED EMPEROR",
+          "GOLD-SPOTTED RABBITFISH",
+          "BLUEBANDED SURGEONFISH",
+          "EPAULETTE SURGEONFISH", 
+          "CONVICT TANG", 
+          "BUCKTOOTH PARROTFISH", 
+          "BLUEFIN TREVALLY", 
+          "PEACOCK GROUPER", 
+          "TRIPLETAIL WRASSE", 
+          "NAPOLEON WRASSE",
+          "BULLETHEAD PARROTFISH", 
+          "HIGHFIN RUDDERFISH", 
+          "BIGEYE EMPEROR",
+          "YELLOWFIN GOATFISH", 
+          "ORANGESPINE UNICORNFISH", 
+          "BLUESPINE UNICORNFISH", 
+          "SABER SQUIRRELFISH",
+          "TAHITIAN SQUIRRELFISH", 
+          "REDLIP PARROTFISH", 
+          "SCRIBBLED RABBITFISH", 
+          "MOORISH IDOL")
+
 
 temp<-data.frame(ScientificName=all, CommonName=all_cn)
 
-data<-dplyr::left_join(data,temp)
+data<-dplyr::left_join(data,temp, by="ScientificName")
 
 data<-data|> dplyr::arrange(ScientificName)
 
