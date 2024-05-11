@@ -41,6 +41,12 @@ here::i_am("biosampling.Rmd")
 
 data <- read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples_2_2024_commonname_noSI.csv")
 
+data<-data[complete.cases(data$ScientificName),] 
+
+#names(data)[names(data) == 'CommonName'] <- 'CN'
+str(data)
+unique(sort(data$ScientificName))
+
 #pull BMUS and priority non-BMUS species
 #test first with BMUS only
 BMUS<-c("Aphareus rutilans","Aprion virescens", 
@@ -128,7 +134,8 @@ all<-c("Aphareus rutilans","Aprion virescens",
 
 #subset data 
 data<-data |> subset(ScientificName %in% all)
-
+sort(unique(data$ScientificName))
+str(data)
 #fix common names to only one per scientific name
 #unique(data$CommonName)
 
@@ -179,6 +186,15 @@ all_cn<-c("SILVERMOUTH",
 
 
 temp<-data.frame(ScientificName=all, CommonName=all_cn)
+str(temp)
+sort(unique(temp$ScientificName))
+str(data)
+sort(unique(data$ScientificName))
+
+
+data<-data[complete.cases(data$CommonName),] 
+str(data)
+data<-data%>% dplyr::select(ScientificName, Sex, Length.cm., Weight.g., GonWeight, Month, Region)
 
 data<-dplyr::left_join(data,temp, by="ScientificName")
 
