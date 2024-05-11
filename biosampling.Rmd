@@ -111,7 +111,19 @@ all<-c("Aphareus rutilans","Aprion virescens",
 "Calotomus carolinus",
 "Caranx melampygus",
 "Cephalopholis argus",
-"Cheilinus trilobatus")
+"Cheilinus trilobatus",
+"Cheilinus undulatus",
+"Chlorurus sordidus",
+"Kyphosus cinerascens",
+"Monotaxis grandoculis",
+"Mulloidichthys vanicolensis",
+"Naso lituratus",
+"Naso unicornis",
+"Sargocentron spiniferum",
+"Sargocentron tiere",
+"Scarus rubroviolaceus",
+"Siganus spinus",
+"Zanclus cornutus")
 
 
 #subset data 
