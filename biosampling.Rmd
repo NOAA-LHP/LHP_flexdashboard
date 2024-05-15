@@ -43,10 +43,17 @@ data <- read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples_2_2024_c
 
 data<-data[complete.cases(data$ScientificName),] 
 
+data <- data[-which(data$ScientificName=="Calotomus carolinus" & data$Length.cm.>80),]
+
+data <- data[-which(data$ScientificName=="Acanthurus lineatus" & data$Length.cm.>28),]
+  
 names(data)[names(data) == 'CommonName'] <- 'CN'
 str(data)
 unique(sort(data$ScientificName))
 
+summ<-data %>% 
+  dplyr::group_by(ScientificName, Region, Month) %>%
+  summarise(n=length(Length.cm.))
 #pull BMUS and priority non-BMUS species
 #test first with BMUS only
 BMUS<-c("Aphareus rutilans","Aprion virescens", 
@@ -194,16 +201,10 @@ sort(unique(data$ScientificName))
 
 data<-data%>% dplyr::select(ScientificName, Sex, Length.cm., Weight.g., GonWeight, Month, Region)
 
-#data<-dplyr::left_join(data,temp, by="ScientificName")
 data<-merge(data,temp, by="ScientificName")
 
 data<-data|> dplyr::arrange(ScientificName)
 
-#TEMPORARY - test data set
-#test_scinames <- c('Aphareus rutilans', 'Acanthurus lineatus', 'Pristipomoides sieboldii')
-#test_commonnames <- c('SILVERMOUTH', 'BLUEBANDED SURGEONFISH', 'KALIKALI')
-#data <- data |> filter(CommonName %in% test_commonnames & ScientificName %in% test_scinames)
-#END TEMPORARY
 
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
@@ -270,10 +271,11 @@ temp<-temp[complete.cases(temp$Length.cm.),]
   #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
   tempm<-temp%>% 
    na.omit(temp)
-  Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
+  Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
   Mn=c(1:10, 1)
   Months<-as.data.frame(Months)
   Months<-as.factor(Months$Months)
+  #Months <- ordered(Months, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"))
   tempm<-temp %>%
     dplyr::group_by(Month)%>%
     dplyr::summarize(N_month=length(Length.cm.))
@@ -323,10 +325,9 @@ output$four_panel_plot <- renderPlot({
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
-  #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date formatt for plotting in order
   tempm<-temp 
    # na.omit(temp)
-  Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
+  Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
   Mn=c(1:10, 1)
   Months<-as.data.frame(Months)
   Months<-as.factor(Months$Months)
@@ -338,7 +339,6 @@ output$four_panel_plot <- renderPlot({
   tempm<-complete(tempm, Month, fill=list(N_Month=0))
   gsi<-temp %>% 
     dplyr::mutate(GSI=(GonWeight/Weight.g.)*100)
-  
   #join into list
   build_list<-list(temp, tempm, gsi)
   names(build_list)<- c('temp','tempm','gsi')
@@ -355,10 +355,12 @@ output$four_panel_plot <- renderPlot({
       scale_fill_manual(values=c("red", "blue", "white", "black"))+
       theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")+scale_x_continuous(limits = c(length_min-2, length_max+2))
-    
+
     
     #monthly samples
-    p2<-ggplot(tempm, aes(x=Month, y=tempm$N_month)) + 
+      level_order <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+    p2<-ggplot(tempm, aes(x=factor( Month, level=(level_order)), y=tempm$N_month)) + 
       geom_bar(stat = "identity")+xlab("") +  ylab("Frequency") + ggtitle("Monthly Sample Distribution")+
       geom_hline(yintercept = 20, colour="red", linetype = "dashed")+ theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
                                                                                          panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position="none")
