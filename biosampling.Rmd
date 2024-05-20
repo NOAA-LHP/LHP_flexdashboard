@@ -39,8 +39,8 @@ here::i_am("biosampling.Rmd")
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
 
-data <- read.csv("~/Documents/github/LHP_flexdashboard/data/all_samples_2_2024_commonname_noSI.csv")
 
+data <- read.csv("data/all_samples_2_2024_commonname_noSI.csv") 
 data<-data[complete.cases(data$ScientificName),] 
 unique(data$Month)
 data$Month<-as.character(data$Month)
