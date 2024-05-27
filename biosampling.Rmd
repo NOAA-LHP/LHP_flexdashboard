@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     source_code: "https://github.com/evaschemmel-NOAA-LHP"
     orientation: rows
-    vertical_layout: fill
+    vertical_layout: scroll
     theme:
       version: 4
       bg: "#FFFFFF"
@@ -23,7 +23,6 @@ library(dplyr)
 library(tidyr)
 library(gridExtra)
 library(htmltools)
-
 
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
 # thematic::thematic_rmd()
@@ -324,9 +323,12 @@ uiOutput("text_summary")
 
 output$four_panel_plot <- renderPlot({
 
+
+
   # Filter data
   temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
+
   tempm<-temp 
    # na.omit(temp)
   Months<-c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -352,7 +354,8 @@ output$four_panel_plot <- renderPlot({
     nbins <- seq(length_min - bin_width,
                  length_max + bin_width,
                  by = bin_width)
-    p1 <- ggplot(data=temp, aes(x=Length.cm.))+geom_histogram(binwidth=2,breaks=nbins, color="black", aes(fill=Sex)) + 
+   
+      p1 <- ggplot(data=temp, aes(x=Length.cm.))+geom_histogram(binwidth=2,breaks=nbins, color="black", aes(fill=Sex)) + 
       xlab("Fork Length (cm)") +  ylab("Frequency") + ggtitle("Size Distribution")+
       scale_fill_manual(values=c("red", "blue", "white", "black"))+
       theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
@@ -389,6 +392,7 @@ output$four_panel_plot <- renderPlot({
     grid.arrange(p1,p2,p3,p4 , nrow = 2)
 }
 )
+
 
 plotOutput("four_panel_plot")
 
