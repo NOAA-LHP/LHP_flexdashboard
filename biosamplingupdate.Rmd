@@ -211,9 +211,61 @@ data<-data|> dplyr::arrange(ScientificName)
 
 #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
-species_list <- na.omit((unique(data$ScientificName)))
-common_list <-all_cn
-common_list <- na.omit((unique(data$CommonName)))
+#species_list <- na.omit((unique(data$ScientificName)))
+#common_list <-all_cn
+#common_list <- na.omit((unique(data$CommonName)))
+
+#dictionary of scientific name : common name
+#scientific_dict <- species_list
+#names(scientific_dict) <- common_list
+
+#and common name : scientific name
+#common_dict <- common_list
+#names(common_dict) <- species_list
+
+```
+
+
+```{r guam, include=FALSE}
+guamsn<-c("Aphareus rutilans","Aprion virescens", 
+  "Caranx ignobilis",  
+  "Caranx lugubris",  
+  "Etelis carbunculus",  
+  "Etelis coruscans",  
+  "Lethrinus rubrioperculatus" , 
+  "Lutjanus kasmira"  ,
+  "Pristipomoides auricilla"  ,
+  "Pristipomoides filamentosus"  ,
+  "Pristipomoides flavipinnis"  ,
+  "Pristipomoides sieboldii"  ,
+  "Pristipomoides zonatus"  ,
+  "Variola louti","Caranx melampygus", 
+"Cheilinus undulatus",
+"Epinephelus fasciatus",
+"Lethrinus obsoletus",
+"Siganus punctatus")
+
+guamcn<-c("SILVERMOUTH", "UKU","GIANT TREVALLY", "BLACK JACK", "EHU SNAPPER", "ONAGA SNAPPER", "REDGILL EMPEROR", "BLUELINED SNAPPER", "YELLOWTAIL KALIKALI", "PINK OPAKAPAKA", "YELLOWEYE OPAKAPAKA","KALIKALI","GINDAI", "LYRETAIL GROUPER","BLUEFIN TREVALLY","NAPOLEON WRASSE", "BLACKTIP GROUPER", "ORANGE-STRIPED EMPEROR","GOLD-SPOTTED RABBITFISH")
+temp<-data.frame(ScientificName=guamsn, CommonName=guamcn)
+str(temp)
+sort(unique(temp$ScientificName))
+str(data)
+sort(unique(data$ScientificName))
+
+gdata<-data %>% dplyr::filter(Region =="Guam")
+
+gdata<-gdata%>% dplyr::select(ScientificName, Sex, Length.cm., Weight.g., GonWeight, Month, Region)
+
+gdata<-merge(gdata,temp, by="ScientificName")
+
+gdata<-gdata|> dplyr::arrange(ScientificName)
+
+
+#set up species and region lists for dropdown menu
+#region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
+species_list <- na.omit((unique(gdata$ScientificName)))
+common_list <-guamcn
+common_list <- na.omit((unique(guamcn)))
 
 #dictionary of scientific name : common name
 scientific_dict <- species_list
@@ -223,11 +275,10 @@ names(scientific_dict) <- common_list
 common_dict <- common_list
 names(common_dict) <- species_list
 
+
 ```
 
 
-
-**GUAM**
 
 <span style="color:#005AA8">
 
@@ -271,7 +322,7 @@ observeEvent(input$Species, {
 output$text_summary_Guam <- renderUI({
 
   # Filter data
-  temp <- data |> filter(Region == "Guam", ScientificName == input$Species)
+  temp <- gdata |> filter(ScientificName == input$Species)
 #temp=data  #for troubleshooting
 temp<-temp[complete.cases(temp$Length.cm.),] 
   #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
@@ -331,7 +382,7 @@ output$four_panel_plot_G <- renderPlot({
 
 
   # Filter data
-  temp <- data |> filter(Region == "Guam", ScientificName == input$Species)
+  temp <- gdata |> filter( ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
 
   tempm<-temp 
@@ -406,6 +457,113 @@ plotOutput("four_panel_plot_G")
 
 # CNMI
 
+```{r cnmim, include=FALSE}
+cnmisn<-c("Aphareus rutilans",
+          "Aprion virescens", 
+  "Caranx ignobilis",  
+  "Caranx lugubris",  
+  "Etelis carbunculus",  
+  "Etelis coruscans",  
+  "Lethrinus rubrioperculatus" , 
+  "Lutjanus kasmira"  ,
+  "Pristipomoides auricilla"  ,
+  "Pristipomoides filamentosus"  ,
+  "Pristipomoides flavipinnis"  ,
+  "Pristipomoides sieboldii"  ,
+  "Pristipomoides zonatus"  ,
+  "Variola louti", 
+  "Caranx melampygus",
+  "Acanthurus lineatus",
+"Acanthurus nigricauda",
+"Acanthurus triostegus",
+"Calotomus carolinus",
+"Cephalopholis argus",
+"Cheilinus trilobatus",
+"Cheilinus undulatus",
+"Chlorurus sordidus",
+"Kyphosus cinerascens",
+"Lethrinus obsoletus",
+"Monotaxis grandoculis",
+"Mulloidichthus vanicolensis",
+"Naso lituratus",
+"Naso unicornis",
+"Sargocentron spiniferum",
+"Sargocentron tiere",
+"Scarus ruboviolaceus", 
+"Siganus spinus",
+"Zanclus cornutus")
+
+
+cnmicn<-c("SILVERMOUTH",
+          "UKU",
+          "GIANT TREVALLY", 
+          "BLACK JACK",
+          "EHU SNAPPER",
+          "ONAGA SNAPPER",
+          "REDGILL EMPEROR", 
+          "BLUELINED SNAPPER", 
+          "YELLOWTAIL KALIKALI",
+          "PINK OPAKAPAKA", 
+          "YELLOWEYE OPAKAPAKA",
+          "KALIKALI",
+          "GINDAI", 
+          "LYRETAIL GROUPER",
+          "BLUEFIN TREVALLY",
+        "BLUEBANDED SURGEONFISH", 
+        "EPAULETTE SURGEONFISH",
+        "CONVICT TANG",
+        "BUCKTOOTH PARROTFISH", 
+        "PEACOCK GROUPER", 
+        "TRIPLETAIL WRASSE", 
+        "NAPOLEON WRASSE",
+        "BULLETHEAD PARROTFISH",
+        "HIGHFIN RUDDERFISH",
+        "ORANGE-STRIPED EMPEROR",
+        "BIGEYE EMPEROR",
+        "YELLOWFIN GOATFISH", 
+        "ORANGESPINE UNICORNFISH",
+        "BLUESPINE UNICORNFISH", 
+        "SABER SQUIRRELFISH",
+        "TAHITIAN SQUIRRELFISH",
+        "REDLIP PARROTFISH", 
+        "SCRIBBLED RABBITFISH",
+        "MOORISH IDOL")
+
+temp<-data.frame(ScientificName=cnmisn, CommonName=cnmicn)
+str(temp)
+sort(unique(temp$ScientificName))
+str(data)
+
+
+cdata<-data%>% dplyr::filter(Region=="CNMI")
+
+cdata<-cdata%>% dplyr::select(ScientificName, Sex, Length.cm., Weight.g., GonWeight, Month, Region)
+
+cdata<-merge(cdata,temp, by="ScientificName")
+
+cdata<-cdata|> dplyr::arrange(ScientificName)
+
+
+#set up species and region lists for dropdown menu
+#region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
+species_list <- na.omit((unique(cnmisn)))
+common_list <-cnmicn
+common_list <- na.omit((unique(cnmicn)))
+
+#dictionary of scientific name : common name
+scientific_dict <- species_list
+names(scientific_dict) <- common_list
+
+#and common name : scientific name
+common_dict <- common_list
+names(common_dict) <- species_list
+
+
+```
+
+
+
+
 **CNMI**
 
 ## Row {data-height="150"}
@@ -415,7 +573,7 @@ plotOutput("four_panel_plot_G")
 output$text_summary <- renderUI({
 
   # Filter data
-  temp <- data |> filter(Region == "CNMI", ScientificName == input$Species)
+  temp <- cdata |> filter( ScientificName == input$Species)
 #temp=data  #for troubleshooting
 temp<-temp[complete.cases(temp$Length.cm.),] 
   #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
@@ -475,7 +633,7 @@ output$four_panel_plot <- renderPlot({
 
 
   # Filter data
-  temp <- data |> filter(Region == "CNMI", ScientificName == input$Species)
+  temp <- cdata |> filter( ScientificName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
 
   tempm<-temp 
