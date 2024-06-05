@@ -280,12 +280,6 @@ names(common_dict) <- species_list
 
 
 
-<span style="color:#005AA8">
-
-<h4>**Choose a Species**:</h4>
-
-</span>
-
 
 
 ```{r}
@@ -561,6 +555,37 @@ names(common_dict) <- species_list
 
 ```
 
+<span style="color:#005AA8">
+
+<h4>**Choose a Species**:</h4>
+
+</span>
+
+
+
+```{r}
+# Select indicator to view 
+
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Species', label = 'Species', choices = species_list, selected = c('Aphareus rutilans'))
+)
+
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  selectInput('Name', label = 'Common Name', choices = common_list, selected = c('SILVERMOUTH'))
+)
+
+#When common name changes, update scientific name
+observeEvent(input$Name, {
+  updateSelectInput(session, 'Species', label = NULL, choices = species_list, selected = scientific_dict[input$Name])
+})
+
+#when scientific name changes, update common name
+observeEvent(input$Species, {
+  updateSelectInput(session, 'Name', label = NULL, choices = common_list, selected = common_dict[input$Species])
+})
+
+
+```
 
 
 
