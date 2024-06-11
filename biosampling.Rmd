@@ -405,6 +405,13 @@ Appropriate collections of biological samples are crucial for understanding fish
 Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/45018>.
 
 # Life History Updates
+```{r}
+ui <- fluidPage( column(width=6,style='width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;',
+    plotOutput("heatmap2",width="500px",height="500px")
+  ))
+
+```
+
 
 **Parameter Definitions:**
 
