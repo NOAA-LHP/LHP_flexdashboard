@@ -16,14 +16,16 @@ runtime: shiny
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(tidyselect)
 library(lubridate)
 library(magrittr)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
 library(gridExtra)
+library(dplyr)
 library(htmltools)
-
+library(stringr)
+library(here)
+library(tidyr)
+library(ggplot2)
 # Install thematic and un-comment for themed static plots (i.e., ggplot2)
 # thematic::thematic_rmd()
 ```
@@ -37,9 +39,8 @@ here::i_am("biosampling.Rmd")
 ```{r global, include=FALSE}
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
-
-
-data <- read.csv("data/all_samples_2_2024_commonname_noSI.csv") 
+# data <- read.csv("data/all_samples_2_2024_commonname_noSI.csv") 
+data <- read.csv(here("data", "all_samples_2_2024_commonname_noSI.csv"))
 data<-data[complete.cases(data$ScientificName),] 
 unique(data$Month)
 data$Month<-as.character(data$Month)
@@ -207,19 +208,24 @@ data<-merge(data,temp, by="ScientificName")
 data<-data|> dplyr::arrange(ScientificName)
 
 
-#set up species and region lists for dropdown menu
+# #set up species and region lists for dropdown menu
 region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
-species_list <- na.omit((unique(data$ScientificName)))
-common_list <-all_cn
-common_list <- na.omit((unique(data$CommonName)))
 
-#dictionary of scientific name : common name
-scientific_dict <- species_list
-names(scientific_dict) <- common_list
+# Combine scientific and common names
+CombinedName <- as.matrix(str_c(data$ScientificName, data$CommonName, sep = ' - '))
+data <- cbind(data, CombinedName)
 
-#and common name : scientific name
-common_dict <- common_list
-names(common_dict) <- species_list
+# species_list <- na.omit((unique(data$ScientificName)))
+# common_list <-all_cn
+# common_list <- na.omit((unique(data$CommonName)))
+# 
+# #dictionary of scientific name : common name
+# scientific_dict <- species_list
+# names(scientific_dict) <- common_list
+# 
+# #and common name : scientific name
+# common_dict <- common_list
+# names(common_dict) <- species_list
 
 ```
 
@@ -232,28 +238,42 @@ names(common_dict) <- species_list
 </span>
 
 ```{r}
-# Select indicator to view 
+# Select indicator to view
+# https://stackoverflow.com/questions/45975959/create-reactive-selectinput-flexdashboard-with-shiny
 div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
   selectInput('Region', label = 'Region', choices = region_list, selected = c('Guam'))
 )
 
-div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
-  selectInput('Species', label = 'Species', choices = species_list, selected = c('Aphareus rutilans'))
-)
-
-div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
-  selectInput('Name', label = 'Common Name', choices = common_list, selected = c('SILVERMOUTH'))
-)
-
-#When common name changes, update scientific name
-observeEvent(input$Name, {
-  updateSelectInput(session, 'Species', label = NULL, choices = species_list, selected = scientific_dict[input$Name])
+region_data <- reactive({
+  data |> filter(Region == input$Region) # |>
 })
 
-#when scientific name changes, update common name
-observeEvent(input$Species, {
-  updateSelectInput(session, 'Name', label = NULL, choices = common_list, selected = common_dict[input$Species])
-})
+div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+  renderUI({
+  selectInput('Species', 
+              label = 'Species', 
+              choices = na.omit(unique(region_data()$CombinedName)), 
+              selected = c('Aphareus rutilans - SILVERMOUTH'))
+  })
+)
+
+# div(style = "margin-top: -10px; ", #decreases amount of whitespace between label and input selection UI
+#   renderUI({
+#   selectInput('Name', label = 'Common Name', choices = na.omit(unique(region_data()$CommonName)), selected = c('SILVERMOUTH'))
+#   # selectInput('Name', label = 'Common Name', choices = NULL)
+#   })
+# )
+
+# #When common name changes, update scientific name
+# observeEvent(input$Name, {
+#     updateSelectInput(session, 'Species', label = NULL, choices = species_list, selected = scientific_dict[input$Name])
+#   })
+# })
+# 
+# #when scientific name changes, update common name
+# observeEvent(input$Species, {
+#   updateSelectInput(session, 'Name', label = NULL, choices = common_list, selected = common_dict[input$Species])
+# })
 
 ```
 
@@ -266,7 +286,7 @@ observeEvent(input$Species, {
 output$text_summary <- renderUI({
 
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  temp <- data |> filter(Region == input$Region, CombinedName == input$Species)
 #temp=data  #for troubleshooting
 temp<-temp[complete.cases(temp$Length.cm.),] 
   #temp$Month<-month(temp$Date, label=TRUE) #keeps month data in date format for plotting in order
@@ -326,7 +346,7 @@ output$four_panel_plot <- renderPlot({
 
 
   # Filter data
-  temp <- data |> filter(Region == input$Region, ScientificName == input$Species)
+  temp <- data |> filter(Region == input$Region, CombinedName == input$Species)
   temp<-temp[complete.cases(temp$Length.cm.),] 
 
   tempm<-temp 
@@ -405,13 +425,6 @@ Appropriate collections of biological samples are crucial for understanding fish
 Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/45018>.
 
 # Life History Updates
-```{r}
-ui <- fluidPage( column(width=6,style='width:400px;overflow-x: scroll;height:400px;overflow-y: scroll;',
-    plotOutput("heatmap2",width="500px",height="500px")
-  ))
-
-```
-
 
 **Parameter Definitions:**
 
