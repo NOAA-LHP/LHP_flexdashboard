@@ -422,13 +422,13 @@ plotOutput("four_panel_plot")
 
 Appropriate collections of biological samples are crucial for understanding fish life history and population dynamics needed for sustainable fisheries management. These samples provide estimates of length at age, growth rates, longevity, aspects of reproduction (size and age at maturity, fecundity, spawning season), and mortality. This information is used to inform stock assessments, including those that use a data-poor approach. Life history information is also important to local management agencies when setting size limits and closed seasons to protect fish while they are spawning and ultimately increase fish population productivity. Finally, fish life history is expected to change in response to climate change; therefore, providing baseline information under current conditions is needed to document and understand future impacts.
 
-Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/56518> COPY and PASTE into Browser.
+Pacific Islands Fisheries Science Center, Life History Program samples insular fish species in the U.S. Pacific jurisdictions via the Commercial Fisheries Biosampling Programs (CFBS) and NOAA Life History Program research surveys. This dashboard summaries our biosampling collections to date for Guam, The Common Wealth of the Northern Mariana Islands (CNMI), and American Samoa. For more information please see the full biosamling inventory report available at: <https://repository.library.noaa.gov/view/noaa/56518>.
 
 # Life History
 
 **Mariana Islands**
 
-![](images/gindai.jpg){width="200"} **Gindai (*Pristipomoides zonatus*)**
+![](images/Gindai.jpg){width="200"} **Gindai (*Pristipomoides zonatus*)**
 
 Updates to gindai life history are continuing with additional sampling and updates to the 2021 life history assessment. Ginadi are moderately long lived, with maximum age recorded of 30 years in Guam. Males obtain a larger average size and a larger asymptotic size (+3.03 cm, 1.2 inches) fork length (FL) than females. Gindai have a long spawning season and spawn often, suggesting high reproductive output.
 
@@ -468,4 +468,4 @@ Highlights
 
 # Report Issues
 
-Please use this [form](<https://repository.library.noaa.gov/view/noaa/56518>) to report issues or make suggestions.
+Please use this [form](https://docs.google.com/forms/d/1tB4AG6tbHkUmmiE0ijLwlES3qD_NEzsSnknq3kn6apw/edit) to report issues or make suggestions.
