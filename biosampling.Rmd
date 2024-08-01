@@ -2,7 +2,7 @@
 title: "NOAA Biosampling Species Summaries"
 output: 
   flexdashboard::flex_dashboard:
-    source_code: "https://github.com/evaschemmel-NOAA-LHP"
+    source_code: "https://github.com/NOAA-LHP/LHP_flexdashboard"
     orientation: rows
     vertical_layout: scroll
     theme:
@@ -468,4 +468,4 @@ Highlights
 
 # Report Issues
 
-Please use this [form](https://docs.google.com/forms/d/1tB4AG6tbHkUmmiE0ijLwlES3qD_NEzsSnknq3kn6apw/edit) to report issues or make suggestions.
+Please use this [form](https://docs.google.com/forms/d/e/1FAIpQLSdcBZ1ALlllMbj6u1cGPRksrO_4ebY8AtLL7rzKnIuS4ISy-w/viewform?usp=sf_link) to report issues or make suggestions.
