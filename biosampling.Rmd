@@ -40,7 +40,8 @@ here::i_am("biosampling.Rmd")
 # load data in 'global' chunk so it can be shared by all users of the dashboard
 
 # data <- read.csv("data/all_samples_2_2024_commonname_noSI.csv") 
-data <- read.csv(here("data", "all_samples_2_2024_commonname_noSI.csv"))
+#data <- read.csv(here("data", #"all_samples_2_2024_commonname_noSI.csv"))
+data <- read.csv(here("data", "all_samples_8_2024_commonname.csv"))
 data<-data[complete.cases(data$ScientificName),] 
 unique(data$Month)
 data$Month<-as.character(data$Month)
@@ -329,7 +330,7 @@ temp<-temp[complete.cases(temp$Length.cm.),]
   #unpretty formatting but I could not get inline variables (line below) to work
   paste0("A total of ", sample_size, " samples (females=", female, ", males=", male,
          ", unknown/na=", unknown, ") have been collected to date. Median fork length is ",
-         length_median, " cm (min=", length_min, "cm, max=", length_max, " cm).")
+         length_median, " cm (min=", length_min, "cm, max=", length_max, " cm). Updated August 2024.")
   
   #markdown("A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).")
   
