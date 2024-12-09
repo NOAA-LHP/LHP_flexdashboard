@@ -369,6 +369,7 @@ output$four_panel_plot <- renderPlot({
   tempm<-complete(tempm, Month, fill=list(N_Month=0))
   gsi<-temp %>% 
     dplyr::mutate(GSI=(GonWeight/Weight.g.)*100)
+  gsi<-gsi %>% subset(GSI<30) #removing data errors - not best practice to do it here
   #join into list
   build_list<-list(temp, tempm, gsi)
   names(build_list)<- c('temp','tempm','gsi')
