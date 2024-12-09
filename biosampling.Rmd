@@ -41,7 +41,8 @@ here::i_am("biosampling.Rmd")
 
 # data <- read.csv("data/all_samples_2_2024_commonname_noSI.csv") 
 #data <- read.csv(here("data", #"all_samples_2_2024_commonname_noSI.csv"))
-data <- read.csv(here("data", "all_samples_8_2024_commonname.csv"))
+#data <- read.csv(here("data", "all_samples_8_2024_commonname.csv"))
+data <- read.csv(here("data", "all_samples_12_2024_commonname.csv"))
 data<-data[complete.cases(data$ScientificName),] 
 unique(data$Month)
 data$Month<-as.character(data$Month)
@@ -108,6 +109,7 @@ all<-c("Aphareus rutilans","Aprion virescens",
   "Caranx lugubris",  
   "Etelis carbunculus",  
   "Etelis coruscans",  
+  "Hyporthodus quernus",
   "Lethrinus rubrioperculatus" , 
   "Lutjanus kasmira",
   "Pristipomoides auricilla" ,
@@ -162,6 +164,7 @@ all_cn<-c("SILVERMOUTH",
           "BLACK JACK",
           "EHU SNAPPER",
           "ONAGA SNAPPER",
+          "HAPU",
           "REDGILL EMPEROR", 
           "BLUELINED SNAPPER", 
           "YELLOWTAIL KALIKALI",
@@ -212,7 +215,7 @@ data<-data|> dplyr::arrange(ScientificName)
 
 
 # #set up species and region lists for dropdown menu
-region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished")
+region_list <- c("A.Samoa", "A.Samoa_unfished", "Guam", "CNMI", "CNMI_unfished", "MHI")
 
 # Combine scientific and common names
 CombinedName <- as.matrix(str_c(data$ScientificName, data$CommonName, sep = ' - '))
@@ -330,7 +333,7 @@ temp<-temp[complete.cases(temp$Length.cm.),]
   #unpretty formatting but I could not get inline variables (line below) to work
   paste0("A total of ", sample_size, " samples (females=", female, ", males=", male,
          ", unknown/na=", unknown, ") have been collected to date. Median fork length is ",
-         length_median, " cm (min=", length_min, "cm, max=", length_max, " cm). Updated August 2024.")
+         length_median, " cm (min=", length_min, "cm, max=", length_max, " cm). Updated December 2024.")
   
   #markdown("A total of `r sample_size` samples (females=`r female`, males=`r male`, unknown/na=`r unknown`) have been collected to date. Median fork length is `r median` cm (min=`r min` cm, max=`r max` cm).")
   
