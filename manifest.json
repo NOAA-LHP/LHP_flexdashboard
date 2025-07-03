@@ -4,7 +4,7 @@
   "platform": "4.2.1",
   "metadata": {
     "appmode": "rmd-shiny",
-    "primary_rmd": "app.R",
+    "primary_rmd": "biosampling.R",
     "primary_html": null,
     "content_category": null,
     "has_parameters": false
