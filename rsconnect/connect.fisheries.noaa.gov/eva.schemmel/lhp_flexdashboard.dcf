@@ -5,6 +5,6 @@ account: eva.schemmel
 server: connect.fisheries.noaa.gov
 hostUrl: https://connect.fisheries.noaa.gov/__api__
 appId: 484
-bundleId: 2864
-url: https://connect.fisheries.noaa.gov/content/c2f4448f-c273-4f26-bdd5-40a09f2f1cff/
+bundleId:
+url: https://connect.fisheries.noaa.gov/biosampling/
 version: 1

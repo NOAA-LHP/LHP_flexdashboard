@@ -32,7 +32,7 @@ library(gridExtra)
 root_dir <- here(..=0) #Root directory is one folder above where this script is
 
 # 1.Loading and editing data
-data <- read.csv(file.path(root_dir,"data/all_samples_12_2024_commonname_datefixed.csv"))
+data <- read.csv(file.path(root_dir,"data/all_samples_8_2025_commonname_datefixed.csv"))
 data<-data[complete.cases(data$ScientificName),] 
 unique(data$Month)
 data$Month<-as.character(data$Month)
